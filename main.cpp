@@ -1,7 +1,14 @@
-#include<stdio.h>
+#include <stdio.h>
+#include "List/ListFunc.h"
 
 
 int main()
 {
-    printf("hhrrrr\n");
+    LIST lst = { 0 };
+
+    ListCtor(&lst, 16);
+    ListDump(&lst);
+    ListDtor(&lst);
+
+    return 0;
 }
