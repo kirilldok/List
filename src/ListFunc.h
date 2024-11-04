@@ -3,6 +3,7 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 #include<assert.h>
 
 enum ERRORS
@@ -32,8 +33,11 @@ typedef struct List
 } LIST;
 
 
-int ListCtor(LIST* lst, int size);
+int ListCtor(LIST* lst, size_t size);
 int ListVerify(LIST* lst);
+int ListPush(LIST* lst, List_t element, int index);
+int ListAppend(LIST* lst, List_t element);
+int GetFirstPTR(LIST* lst);
 int FindFreeSell(List_t* arr, int capacity);
 int ListDtor(LIST* lst);
 

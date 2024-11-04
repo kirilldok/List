@@ -1,21 +1,21 @@
 #include "ListFunc.h"
 
-const char *LIST_LOG_FILE = "../run/Listlog.html";
-const char *LIST_GRAPHVIZ = "../run/graphviz.gv";
+const char *LIST_LOG_FILE = "run/Listlog.html";
+const char *LIST_GRAPHVIZ = "run/graphviz.gv";
 const int   LIST_CMD_SIZE = 256;
 
 int ListDump(LIST* lst)
 {
     assert(lst);
 
-    FILE* logfile = fopen(LIST_LOG_FILE, "a"); assert(logfile);
+    FILE* logfile = fopen(LIST_LOG_FILE, "a+"); assert(logfile);
 
     fprintf(logfile, "<pre>\n");
     fprintf(logfile, "#####################LISTDUMP#####################\n");
     fprintf(logfile,
-            "## LIST SIZE:     %d\n",
-            "## LIST CAPACITY: %d\n",
-            "## LIST HEAD:     %d\n",
+            "## LIST SIZE:     %d\n"
+            "## LIST CAPACITY: %d\n"
+            "## LIST HEAD:     %d\n"
             "## LIST TAIL:     %d\n",
             lst->size, lst->capacity, lst->head, lst->tail);
 
@@ -30,21 +30,24 @@ int ListDump(LIST* lst)
     PrintArray(lst->next, lst->capacity, logfile);
     PrintArray(lst->prev, lst->capacity, logfile);
 
-    FILE* graffile = fopen(LIST_GRAPHVIZ, "w"); assert(graffile);
+
+    FILE* graffile = fopen(LIST_GRAPHVIZ, "w+"); assert(graffile);
     MakeDotFile(lst, graffile);
     fclose(graffile);
+
 
     static int cntImg = 1;
     char *str = (char*)calloc(LIST_CMD_SIZE, sizeof(char));
 
-    sprintf(str, "%s%d%s", "dot -Tpng ../run/graphviz.gv -o ../res/graphviz/graphviz", cntImg, ".png");
+    sprintf(str, "%s%d%s", "dot -Tpng run/graphviz.gv -o run/graphviz/graphviz", cntImg, ".png");
     system(str);
-    sprintf(str, "%s%d%s", "<img src =\"../run/graphviz/graphviz", cntImg, ".png\"><br>");
+    sprintf(str, "%s%d%s", "<img src =\"run/graphviz/graphviz", cntImg, ".png\"><br>");
 
     fprintf(logfile, "%s", str);
     cntImg = cntImg + 1;
     free(str);
 
+    fprintf(logfile, "##################################################\n");
     fclose(logfile);
 
     return NO_ERRORS;
@@ -58,24 +61,25 @@ int MakeDotFile(LIST* lst, FILE* graffile)
     fprintf(graffile,
             "digraph List \n{\n"
             "\trankdir = LR;\n"
-            "\tbgcolor = \"#807E97\"\n");
+            "\tbgcolor = \"#412FC6\"\n\n");
 
-    size_t capacity = sizeof(lst->data) / sizeof(lst->data[0]); assert(capacity);
-    for(int i = 0; i < capacity; i++) //making order of list elements
+    for(int i = 0; i < lst->capacity; i++) //making order of list elements
     {
         fprintf(graffile,
-                "node%.3d ["
-                "shape = Mrecord; "
-                "stile = filled; "
-                "color = \"#5645D1\"; "
-                "lable = \""
+                "\tnode%.3d ["
+                "shape = \"Mrecord\"; "
+                "style = \"filled\"; "
+                "color = \"#807E97\"; "
+                "label = \""
                 "{ ip: %.3d} | "
                 "{data: %d} | "
                 "{next: %d} | "
-                "{prev: %d} \" ]\n", i, i, lst->data[i], lst->next[i], lst->prev[i]);
+                "{prev: %d} \" ];\n", i, i, lst->data[i], lst->next[i], lst->prev[i]);
     }
 
-    for(int i = 1; i < capacity; i++)
+    fprintf(graffile, "\n");
+
+    for(int i = 1; i < lst->capacity; i++) //printing  elements in order
     {
         fprintf(graffile,
                 "\tnode%.3d -> "
@@ -86,23 +90,29 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                 ,i-1,i);
     }
 
-    for(int i = 0; i < lst->size; i++)
+    fprintf(graffile, "\n");
+
+    for(int i = 0; i < lst->size; i++) //printing next elemens order
     {
         fprintf(graffile,
                 "\tnode%.3d -> "
                 "node%.3d ["
                 "weight = 0; "
-                "color = yellow1; ];\n", lst->next[i], lst->next[i + 1]);
+                "color  = yellow1; ];\n", lst->next[i], lst->next[i + 1]);
     }
 
-    for(int i = lst->size; i > 0; i--)
+    fprintf(graffile, "\n");
+
+    for(int i = lst->size; i > 0; i--) //printing prev elemens order
     {
         fprintf(graffile,
                 "\tnode%.3d -> "
                 "node%.3d ["
                 "weight = 0; "
-                "color = purple; ];\n", lst->prev[i] , lst->prev[i - 1]);
+                "color  = green2; ];\n", lst->prev[i] , lst->prev[i - 1]);
     }
+
+    fprintf(graffile, "\n");
 
     fprintf(graffile, "}\n");
 

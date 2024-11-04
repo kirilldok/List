@@ -1,8 +1,8 @@
 #include"ListFunc.h"
 
-static const int Poison_lable = -666;
+static const int Poison_lable = 0;
 
-int ListCtor(LIST* lst, int size)
+int ListCtor(LIST* lst, size_t size)
 {
     assert(lst);
 
@@ -13,12 +13,14 @@ int ListCtor(LIST* lst, int size)
     lst->capacity = size;
     lst->data[0] = START_OF_LABLE;
     lst->data[1] = END_OF_LABLE;
-    lst->next[0] = 0;
-    lst->prev[0] = 0;
+    lst->next[0] = 1;
+    lst->prev[0] = 1;
     lst->size    = 2;
 
     lst->head    = START_HEAD;
     lst->tail    = START_TAIL;
+
+    ListVerify(lst);
 
     return NO_ERRORS;
 }
@@ -64,12 +66,14 @@ int ListPush(LIST* lst, List_t element, int index) // add an element after input
        fprintf(stderr, "NO free sells!\n");
         return LIST_OVERFLOW;
     }
+    fprintf(stderr, "sell = %d\n", sell);
 
     lst->data[lst->size] = element;
     ++lst->size;
 
-    lst->next[sell] = index + 1;
-    lst->next[index + 1] = lst->size;
+    lst->next[sell] = lst->next[index];
+
+    lst->next[index] = sell;
 
 
     if ((sell = FindFreeSell(lst->prev, lst->capacity)) == LIST_OVERFLOW)
@@ -85,7 +89,7 @@ int ListPush(LIST* lst, List_t element, int index) // add an element after input
 }
 
 
-int Listappend(LIST* lst, List_t element)
+int ListAppend(LIST* lst, List_t element)
 {
     assert(lst);
 
@@ -127,7 +131,7 @@ int FindFreeSell(List_t* arr, int capacity)
 {
     assert(arr);
 
-    for(int i = START_HEAD; i < capacity; i++)
+    for(int i = START_HEAD + 1; i < capacity; i++)
     {
         if( arr[i] == Poison_lable)
         {
