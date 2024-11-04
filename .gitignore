@@ -3,4 +3,4 @@ Objects
 *.o
 *.out
 main
-
+log.txt

@@ -599,3 +599,29 @@
 
 
 
+########################## STACK INFO ##########################
+## CALLER STACK: 0x76b5c3309048
+## CALLER FILE    : StackFunc.cpp
+## CALLER FUNCTION: StackCtor
+## LINE          = 53
+## STACK SIZE    = 0
+## STACK CAPACIY = 8
+## LEFT STACK CANARY = 12000
+## RIGHT STACK CANARY = 12100
+## STACK DATA PTR: 0x507000000028
+## DATA BUFFER: 
+# [-666.6]  (0)
+# [-666.6]  (1)
+# [-666.6]  (2)
+# [-666.6]  (3)
+# [-666.6]  (4)
+# [-666.6]  (5)
+# [-666.6]  (6)
+# [-666.6]  (7)
+## HASH SUM: 7567345776826488
+## ERRORS: 0
+
+################################################################
+
+
+
