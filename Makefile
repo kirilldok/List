@@ -13,9 +13,9 @@ CXXFLAGS := -ggdb3 -std=c++17 -O0 -fcheck-new -fsized-deallocation -fstack-prote
 LDFLAGS := -pie -fPIE $(SANITIZEFLAGS)
 
 Objects/%.o : src/%.cpp
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $< -c -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -I ./MyStack $< -c -o $@
 
-SOURCES := Objects/ListDump.o Objects/ListFunc.o
+SOURCES := Objects/ListDump.o Objects/ListFunc.o MyStack/stack.a
 
 main: Objects/main.o $(SOURCES)
 	$(CXX) Objects/main.o $(SOURCES) $(LDFLAGS) -o main

@@ -15,9 +15,9 @@ int ListDump(LIST* lst)
     fprintf(logfile,
             "## LIST SIZE:     %d\n"
             "## LIST CAPACITY: %d\n"
-            "## LIST HEAD:     %d\n"
-            "## LIST TAIL:     %d\n",
-            lst->size, lst->capacity, lst->head, lst->tail);
+            /*"## LIST HEAD:     %d\n"
+            "## LIST TAIL:     %d\n"*/,
+            lst->size, lst->capacity/*, lst->head, lst->tail*/);
 
     fprintf(logfile, "\t");
     for(int i = 0; i < lst->capacity; i++)
@@ -25,7 +25,7 @@ int ListDump(LIST* lst)
         fprintf(logfile, "%.2d ", i);
     }
     fprintf(logfile, "\n");
-
+    //fprintf(stderr, "cap = %d\n", lst->capacity);
     PrintArray(lst->data, lst->capacity, logfile);
     PrintArray(lst->next, lst->capacity, logfile);
     PrintArray(lst->prev, lst->capacity, logfile);
@@ -85,7 +85,7 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                 "\tnode%.3d -> "
                 "node%.3d ["
                 "style = bold; "
-                "weight = 1000; "
+                "weight = 10000; "
                 "color = crimson; ];\n"
                 ,i-1,i);
     }
@@ -98,18 +98,18 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                 "\tnode%.3d -> "
                 "node%.3d ["
                 "weight = 0; "
-                "color  = yellow1; ];\n", lst->next[i], lst->next[i + 1]);
+                "color  = yellow1; ];\n", i, lst->next[i]);
     }
 
     fprintf(graffile, "\n");
 
-    for(int i = lst->size; i > 0; i--) //printing prev elemens order
+    for(int i = lst->size - 1; i > 0; i--) //printing prev elemens order
     {
         fprintf(graffile,
                 "\tnode%.3d -> "
                 "node%.3d ["
                 "weight = 0; "
-                "color  = green2; ];\n", lst->prev[i] , lst->prev[i - 1]);
+                "color  = green2; ];\n", i, lst->prev[i]);
     }
 
     fprintf(graffile, "\n");
