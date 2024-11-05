@@ -1,14 +1,15 @@
 #include"ListFunc.h"
 
-static const int Poison_lable = 0;
+static const int Poison_label = -666;
+static const size_t FREE_label = 0x100000;
 
 int ListCtor(LIST* lst, size_t size)
 {
     assert(lst);
 
     lst->data     = (List_t*)calloc(size, sizeof(List_t)); assert(lst->data);
-    lst->next     = (List_t*)calloc(size, sizeof(List_t)); assert(lst->next);
-    lst->prev     = (List_t*)calloc(size, sizeof(List_t)); assert(lst->prev);
+    lst->next     = (size_t*)calloc(size, sizeof(size_t)); assert(lst->next);
+    lst->prev     = (size_t*)calloc(size, sizeof(size_t)); assert(lst->prev);
 
     lst->capacity = size;
     StackCtor(&lst->free_stk, lst->capacity);
@@ -19,7 +20,7 @@ int ListCtor(LIST* lst, size_t size)
     //lst->head     = START_HEAD;
     //lst->tail     = START_TAIL;
 
-    return NO_ERRORS;
+    return NO_ERROR;
 }
 
 
@@ -34,7 +35,7 @@ int ListVerify(LIST* lst)
 
     for(int i = START_HEAD; i < lst->capacity; i++)
     {
-        lst->data[i] = Poison_lable;
+        lst->data[i] = Poison_label;
         lst->next[i] = i + 1;
         lst->prev[i] = i - 1;
 
@@ -48,7 +49,7 @@ int ListVerify(LIST* lst)
     lst->next[lst->capacity - 1] = 0;
     lst->prev[lst->capacity - 1] = 0;
 
-    return NO_ERRORS;
+    return NO_ERROR;
 }
 
 // int GetFirstPTR(LIST* lst)
@@ -62,7 +63,7 @@ int ListVerify(LIST* lst)
 // }
 
 
-int ListPush(LIST* lst, List_t element, int index) // add an element after input index
+int ListPushInd(LIST* lst, List_t element, int index) // add an element after input index
 {                                                  // if it is the fers element, index must be 0
     assert(lst);
 
@@ -82,7 +83,26 @@ int ListPush(LIST* lst, List_t element, int index) // add an element after input
     lst->next[index]     = (int)sell;
     lst->prev[(int)sell + 1] = (int)sell;
 
-    return NO_ERRORS;
+    return NO_ERROR;
+}
+
+
+int ListPopInd(LIST* lst, List_t* element, int index)
+{
+    assert(lst); assert(element);
+
+    *element = lst->data[index];
+    StackPush(&lst->free_stk, (double)index);
+    lst->data[index] = Poison_label;
+
+    lst->next[lst->prev[index]] = lst->next[index];
+    lst->prev[lst->next[index]] = lst->prev[index];
+
+    lst->next[index] = FREE_label;
+    lst->prev[index] = FREE_label;
+
+
+    return NO_ERROR;
 }
 
 
@@ -95,7 +115,7 @@ int ListDtor(LIST* lst)
     free(lst->next);
     free(lst->prev);
 
-    return NO_ERRORS;
+    return NO_ERROR;
 }
 
 // int ListAppend(LIST* lst, List_t element)

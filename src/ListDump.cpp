@@ -13,8 +13,8 @@ int ListDump(LIST* lst)
     fprintf(logfile, "<pre>\n");
     fprintf(logfile, "#####################LISTDUMP#####################\n");
     fprintf(logfile,
-            "## LIST SIZE:     %d\n"
-            "## LIST CAPACITY: %d\n"
+            "## LIST SIZE:     %lu\n"
+            "## LIST CAPACITY: %lu\n"
             /*"## LIST HEAD:     %d\n"
             "## LIST TAIL:     %d\n"*/,
             lst->size, lst->capacity/*, lst->head, lst->tail*/);
@@ -26,9 +26,9 @@ int ListDump(LIST* lst)
     }
     fprintf(logfile, "\n");
     //fprintf(stderr, "cap = %d\n", lst->capacity);
-    PrintArray(lst->data, lst->capacity, logfile);
-    PrintArray(lst->next, lst->capacity, logfile);
-    PrintArray(lst->prev, lst->capacity, logfile);
+    PrintArray(lst->data, sizeof(List_t), lst->capacity, logfile);
+    PrintArray(lst->next, sizeof(size_t), lst->capacity, logfile);
+    PrintArray(lst->prev, sizeof(size_t), lst->capacity, logfile);
 
 
     FILE* graffile = fopen(LIST_GRAPHVIZ, "w+"); assert(graffile);
@@ -73,8 +73,8 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                 "label = \""
                 "{ ip: %.3d} | "
                 "{data: %d} | "
-                "{next: %d} | "
-                "{prev: %d} \" ];\n", i, i, lst->data[i], lst->next[i], lst->prev[i]);
+                "{next: %lu} | "
+                "{prev: %lu} \" ];\n", i, i, lst->data[i], lst->next[i], lst->prev[i]);
     }
 
     fprintf(graffile, "\n");
@@ -96,7 +96,7 @@ int MakeDotFile(LIST* lst, FILE* graffile)
     {
         fprintf(graffile,
                 "\tnode%.3d -> "
-                "node%.3d ["
+                "node%.3lu ["
                 "weight = 0; "
                 "color  = yellow1; ];\n", i, lst->next[i]);
     }
@@ -107,7 +107,7 @@ int MakeDotFile(LIST* lst, FILE* graffile)
     {
         fprintf(graffile,
                 "\tnode%.3d -> "
-                "node%.3d ["
+                "node%.3lu ["
                 "weight = 0; "
                 "color  = green2; ];\n", i, lst->prev[i]);
     }
@@ -120,14 +120,14 @@ int MakeDotFile(LIST* lst, FILE* graffile)
 }
 
 
-int PrintArray(List_t* Arr, int capacity, FILE* file)
+int PrintArray(void* Arr, size_t elsize, int capacity, FILE* file)
 {
     assert(Arr); assert(file);
 
     fprintf(file, "\t");
     for(int i = 0; i < capacity; i++)
     {
-        fprintf(file, "%.2d ", Arr[i]);
+        fprintf(file, "%.2d ", *((char*)Arr + i * elsize));
     }
     fprintf(file, "\n");
 

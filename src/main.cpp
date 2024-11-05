@@ -8,18 +8,22 @@ int main()
     ListCtor(&lst, 8);
     ListDump(&lst);
 
-    ListPush(&lst, 10, 0);
+    ListPushInd(&lst, 10, 0);
     ListDump(&lst);
-    ListPush(&lst, 20, 1);
+    ListPushInd(&lst, 20, 1);
     ListDump(&lst);
-    ListPush(&lst, 30, 2);
+    ListPushInd(&lst, 30, 2);
     ListDump(&lst);
-    ListPush(&lst, 40, 3);
+    ListPushInd(&lst, 40, 3);
     ListDump(&lst);
-    ListPush(&lst, 50, 4);
+    ListPushInd(&lst, 50, 4);
     ListDump(&lst);
-    ListPush(&lst, 25, 2);
+    ListPushInd(&lst, 25, 2);
     ListDump(&lst);
+    List_t x = 0;
+    ListPopInd(&lst, &x, 3);
+    ListDump(&lst);
+    fprintf(stderr, "x = %d\n", x);
 
     ListDtor(&lst);
 

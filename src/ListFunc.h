@@ -24,13 +24,13 @@ typedef int List_t;
 typedef struct List
 {
     List_t* data;
-    List_t* next;
-    List_t* prev;
+    size_t* next;
+    size_t* prev;
 
     Stack_t free_stk;
 
-    int capacity;
-    int size;
+    size_t capacity;
+    size_t size;
     //int head;
     //int tail;
 } LIST;
@@ -38,7 +38,8 @@ typedef struct List
 
 int ListCtor(LIST* lst, size_t size);
 int ListVerify(LIST* lst);
-int ListPush(LIST* lst, List_t element, int index);
+int ListPushInd(LIST* lst, List_t element, int index);
+int ListPopInd(LIST* lst, List_t* element, int index);
 //int ListAppend(LIST* lst, List_t element);
 //int GetFirstPTR(LIST* lst);
 //int FindFreeSell(List_t* arr, int capacity);
@@ -46,6 +47,6 @@ int ListDtor(LIST* lst);
 
 int ListDump(LIST* lst);
 int MakeDotFile(LIST* lst, FILE* Dump);
-int PrintArray(List_t* Arr, int capacity, FILE* file);
+int PrintArray(void* Arr, size_t elsize, int capacity, FILE* file);
 
 #endif
