@@ -81,7 +81,7 @@ int ListPushInd(LIST* lst, List_t element, int index) // add an element after in
     lst->prev[(int)sell] = index;
 
     lst->next[index]     = (int)sell;
-    lst->prev[(int)sell + 1] = (int)sell;
+    lst->prev[index + 1] = (int)sell;
 
     return NO_ERROR;
 }
