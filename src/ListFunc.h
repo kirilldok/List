@@ -16,14 +16,13 @@ enum ERRORS
 
 // static const int START_OF_LABLE  = 0;
 // static const int END_OF_LABLE    = 0;
-static const int START_HEAD      = 1;
-static const int START_TAIL      = 0;
+static const int VAL_EMPTY = 0;
 
-typedef int List_t;
+typedef int List_arg_t;
 
 typedef struct List
 {
-    List_t* data;
+    List_arg_t* data;
     size_t* next;
     size_t* prev;
 
@@ -38,8 +37,9 @@ typedef struct List
 
 int ListCtor(LIST* lst, size_t size);
 int ListVerify(LIST* lst);
-int ListPushInd(LIST* lst, List_t element, int index);
-int ListPopInd(LIST* lst, List_t* element, int index);
+int ListPushInd(LIST* lst, List_arg_t element, size_t index);
+int ListPopInd(LIST* lst, size_t index);
+//int ListPushEnd(LIST* lst, List_t element);
 //int ListAppend(LIST* lst, List_t element);
 //int GetFirstPTR(LIST* lst);
 //int FindFreeSell(List_t* arr, int capacity);
@@ -47,6 +47,6 @@ int ListDtor(LIST* lst);
 
 int ListDump(LIST* lst);
 int MakeDotFile(LIST* lst, FILE* Dump);
-int PrintArray(void* Arr, size_t elsize, int capacity, FILE* file);
+int PrintArray(void* Arr, size_t elsize, size_t capacity, FILE* file);
 
 #endif

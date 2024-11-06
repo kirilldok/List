@@ -5,7 +5,7 @@ int main()
 {
     LIST lst = { 0 };
 
-    ListCtor(&lst, 8);
+    ListCtor(&lst, 10);
     ListDump(&lst);
 
     ListPushInd(&lst, 10, 0);
@@ -20,10 +20,13 @@ int main()
     ListDump(&lst);
     ListPushInd(&lst, 25, 2);
     ListDump(&lst);
-    List_t x = 0;
-    ListPopInd(&lst, &x, 3);
+
+    ListPopInd(&lst, 3);
     ListDump(&lst);
-    fprintf(stderr, "x = %d\n", x);
+
+
+    //ListPushEnd(&lst, 60);
+    //ListDump(&lst);
 
     ListDtor(&lst);
 

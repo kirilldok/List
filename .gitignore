@@ -4,3 +4,6 @@ Objects
 *.out
 main
 log.txt
+*/run/graphviz.gv
+*/run/Listlog.html
+

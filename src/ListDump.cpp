@@ -1,8 +1,10 @@
 #include "ListFunc.h"
 
-const char *LIST_LOG_FILE = "run/Listlog.html";
-const char *LIST_GRAPHVIZ = "run/graphviz.gv";
-const int   LIST_CMD_SIZE = 256;
+const char *LIST_LOG_FILE   = "run/Listlog.html";
+const char *LIST_GRAPHVIZ   = "run/graphviz.gv";
+const char *SYSTEM_CMD_LINE = "dot -Tpng run/graphviz.gv -o run/graphviz/graphviz";
+const char *HTML_MAKE_IMG   = "<img src =\"run/graphviz/graphviz";
+const int   LIST_CMD_SIZE   = 128;
 
 int ListDump(LIST* lst)
 {
@@ -20,13 +22,13 @@ int ListDump(LIST* lst)
             lst->size, lst->capacity/*, lst->head, lst->tail*/);
 
     fprintf(logfile, "\t");
-    for(int i = 0; i < lst->capacity; i++)
+    for(size_t i = 0; i < lst->capacity; i++)
     {
-        fprintf(logfile, "%.2d ", i);
+        fprintf(logfile, "%.2lu ", i);
     }
     fprintf(logfile, "\n");
     //fprintf(stderr, "cap = %d\n", lst->capacity);
-    PrintArray(lst->data, sizeof(List_t), lst->capacity, logfile);
+    PrintArray(lst->data, sizeof(List_arg_t), lst->capacity, logfile);
     PrintArray(lst->next, sizeof(size_t), lst->capacity, logfile);
     PrintArray(lst->prev, sizeof(size_t), lst->capacity, logfile);
 
@@ -39,9 +41,9 @@ int ListDump(LIST* lst)
     static int cntImg = 1;
     char *str = (char*)calloc(LIST_CMD_SIZE, sizeof(char));
 
-    sprintf(str, "%s%d%s", "dot -Tpng run/graphviz.gv -o run/graphviz/graphviz", cntImg, ".png");
+    sprintf(str, "%s%d%s", SYSTEM_CMD_LINE, cntImg, ".png");
     system(str);
-    sprintf(str, "%s%d%s", "<img src =\"run/graphviz/graphviz", cntImg, ".png\"><br>");
+    sprintf(str, "%s%d%s", HTML_MAKE_IMG, cntImg, ".png\">\n");
 
     fprintf(logfile, "%s", str);
     cntImg = cntImg + 1;
@@ -63,15 +65,15 @@ int MakeDotFile(LIST* lst, FILE* graffile)
             "\trankdir = LR;\n"
             "\tbgcolor = \"#412FC6\"\n\n");
 
-    for(int i = 0; i < lst->capacity; i++) //making order of list elements
+    for(size_t i = 0; i < lst->capacity; i++) //making order of list elements
     {
         fprintf(graffile,
-                "\tnode%.3d ["
+                "\tnode%.3lu ["
                 "shape = \"Mrecord\"; "
                 "style = \"filled\"; "
                 "color = \"#807E97\"; "
                 "label = \""
-                "{ ip: %.3d} | "
+                "{ ip: %.3lu} | "
                 "{data: %d} | "
                 "{next: %lu} | "
                 "{prev: %lu} \" ];\n", i, i, lst->data[i], lst->next[i], lst->prev[i]);
@@ -79,11 +81,11 @@ int MakeDotFile(LIST* lst, FILE* graffile)
 
     fprintf(graffile, "\n");
 
-    for(int i = 1; i < lst->capacity; i++) //printing  elements in order
+    for(size_t i = 1; i < lst->capacity; i++) //printing  elements in order
     {
         fprintf(graffile,
-                "\tnode%.3d -> "
-                "node%.3d ["
+                "\tnode%.3lu -> "
+                "node%.3lu ["
                 "style = bold; "
                 "weight = 10000; "
                 "color = crimson; ];\n"
@@ -92,10 +94,10 @@ int MakeDotFile(LIST* lst, FILE* graffile)
 
     fprintf(graffile, "\n");
 
-    for(int i = 0; i < lst->size; i++) //printing next elemens order
+    for(size_t i = 0; i < lst->size; i++) //printing next elemens order
     {
         fprintf(graffile,
-                "\tnode%.3d -> "
+                "\tnode%.3lu -> "
                 "node%.3lu ["
                 "weight = 0; "
                 "color  = yellow1; ];\n", i, lst->next[i]);
@@ -103,10 +105,10 @@ int MakeDotFile(LIST* lst, FILE* graffile)
 
     fprintf(graffile, "\n");
 
-    for(int i = lst->size - 1; i > 0; i--) //printing prev elemens order
+    for(size_t i = 0; i < lst->size; i++) //printing prev elemens order
     {
         fprintf(graffile,
-                "\tnode%.3d -> "
+                "\tnode%.3lu -> "
                 "node%.3lu ["
                 "weight = 0; "
                 "color  = green2; ];\n", i, lst->prev[i]);
@@ -120,12 +122,12 @@ int MakeDotFile(LIST* lst, FILE* graffile)
 }
 
 
-int PrintArray(void* Arr, size_t elsize, int capacity, FILE* file)
+int PrintArray(void* Arr, size_t elsize, size_t capacity, FILE* file)
 {
     assert(Arr); assert(file);
 
     fprintf(file, "\t");
-    for(int i = 0; i < capacity; i++)
+    for(size_t i = 0; i < capacity; i++)
     {
         fprintf(file, "%.2d ", *((char*)Arr + i * elsize));
     }
