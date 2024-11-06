@@ -1,7 +1,6 @@
 #include"ListFunc.h"
 
 static const int Poison_label = -666;
-static const size_t FREE_label = 0x100000;
 
 int ListCtor(LIST* lst, size_t size)
 {
@@ -18,21 +17,18 @@ int ListCtor(LIST* lst, size_t size)
     {
         lst->data[i] = Poison_label;
         lst->next[i] = i + 1;
-        lst->prev[i] = i - 1;
+        lst->prev[i] = FREE_label;
 
         size_t free = lst->capacity - i;
         StackPush(&lst->free_stk, (double)free);
     }
 
-    lst->next[0] = lst->capacity - 1;
-    lst->prev[0] = lst->capacity - 1;
+    lst->next[0] = 0;
+    lst->prev[0] = 0;
 
-    lst->next[lst->capacity - 1] = 0;
-    lst->prev[lst->capacity - 1] = 0;
-    lst->data[0]                 = VAL_EMPTY;
-    lst->data[lst->capacity - 1] = VAL_EMPTY;
+    lst->data[0] = VAL_EMPTY;
 
-    lst->size = 2;
+    lst->size = 1;
 
     return NO_ERROR;
 }
@@ -42,29 +38,14 @@ int ListVerify(LIST* lst)
 {
     assert(lst);
 
-    // if(lst->size == 0)
-    // {
-    //     return SIZE_IS_NULL;
-    // }
-
-    for(size_t i = 0; i < lst->capacity; i++)
+    if(lst->size == 0)
     {
-        lst->data[i] = Poison_label;
-        lst->next[i] = i + 1;
-        lst->prev[i] = i - 1;
-
-        size_t free = lst->capacity - i;
-        StackPush(&lst->free_stk, (double)free);
+        return SIZE_IS_NULL;
     }
-
-    lst->next[0] = lst->capacity - 1;
-    lst->prev[0] = lst->capacity - 1;
-
-    lst->next[lst->capacity - 1] = 0;
-    lst->prev[lst->capacity - 1] = 0;
-
-    lst->data[0]                 = VAL_EMPTY;
-    lst->data[lst->capacity - 1] = VAL_EMPTY;
+    // if(lst->capacity == 0)
+    // {
+    //     return
+    // }
 
     return NO_ERROR;
 }
@@ -90,15 +71,15 @@ int ListPushInd(LIST* lst, List_arg_t element, size_t index) // add an element a
         return LIST_OVERFLOW;
     }
     //fprintf(stderr, "sell = %lu\n", (size_t)sell);
-
-    lst->data[lst->size - 1] = element;
     ++lst->size;
+    lst->data[lst->size - 1] = element;
+    //++lst->size;
 
     lst->next[(size_t)sell] = lst->next[index];
     lst->prev[(size_t)sell] = index;
 
-    lst->next[index]     = (size_t)sell;
-    lst->prev[index + 1] = (size_t)sell;
+    lst->prev[lst->next[index]] = (size_t)sell;
+    lst->next[index]            = (size_t)sell;
 
     return NO_ERROR;
 }
@@ -114,7 +95,7 @@ int ListPopInd(LIST* lst, size_t index)
     lst->next[lst->prev[index]] = lst->next[index];
     lst->prev[lst->next[index]] = lst->prev[index];
 
-    lst->next[index] = FREE_label;
+    lst->next[index] = lst->prev[index] + 1;
     lst->prev[index] = FREE_label;
 
 

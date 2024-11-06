@@ -64,8 +64,18 @@ int MakeDotFile(LIST* lst, FILE* graffile)
             "digraph List \n{\n"
             "\trankdir = LR;\n"
             "\tbgcolor = \"#412FC6\"\n\n");
+    fprintf(graffile, //printing ferst null element
+                "\tnode000 ["
+                "shape = \"Mrecord\"; "
+                "style = \"filled\"; "
+                "color = \"#A51FE0\"; "
+                "label = \""
+                "{ ip: 000} | "
+                "{data: %d} | "
+                "{next: %lu} | "
+                "{prev: %lu} \" ];\n", lst->data[0], lst->next[0], lst->prev[0]);
 
-    for(size_t i = 0; i < lst->capacity; i++) //making order of list elements
+    for(size_t i = 1; i < lst->capacity; i++) //making order of list elements
     {
         fprintf(graffile,
                 "\tnode%.3lu ["
@@ -88,30 +98,54 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                 "node%.3lu ["
                 "style = bold; "
                 "weight = 10000; "
-                "color = crimson; ];\n"
+                "color = yellow1; ];\n"
                 ,i-1,i);
     }
 
     fprintf(graffile, "\n");
 
-    for(size_t i = 0; i < lst->size; i++) //printing next elemens order
+    for(size_t i = 0; i < lst->capacity; i++) //printing prev elemens order
     {
-        fprintf(graffile,
+        if(lst->prev[i] == FREE_label)
+        {
+            fprintf(graffile,
+                    "\tnode%.3lu ["
+                    "weight = 0; "
+                    "constraint = false; "
+                    "color  = red; ];\n", i);
+        }
+
+        else if(i != lst->prev[lst->next[i]])
+        {
+            fprintf(graffile,
                 "\tnode%.3lu -> "
                 "node%.3lu ["
                 "weight = 0; "
-                "color  = yellow1; ];\n", i, lst->next[i]);
-    }
+                "constraint = false; "
+                "color  = red1; ];\n", i, lst->next[i]);
+        }
 
-    fprintf(graffile, "\n");
+        else if(i != lst->next[lst->prev[i]])
+        {
+            fprintf(graffile,
+                    "\tnode%.3lu -> "
+                    "node%.3lu ["
+                    "weight = 0; "
+                    "constraint = false; "
+                    "color  = orange2; ];\n", i, lst->prev[i]);
+        }
 
-    for(size_t i = 0; i < lst->size; i++) //printing prev elemens order
-    {
-        fprintf(graffile,
-                "\tnode%.3lu -> "
-                "node%.3lu ["
-                "weight = 0; "
-                "color  = green2; ];\n", i, lst->prev[i]);
+        else
+        {
+            fprintf(graffile,
+                    "\tnode%.3lu -> "
+                    "node%.3lu ["
+                    "dir = both; "
+                    "arrowtail = crow; "
+                    "weight = 0; "
+                    "constraint = false; "
+                    "color  = green2; ];\n", i, lst->next[i]);
+        }
     }
 
     fprintf(graffile, "\n");

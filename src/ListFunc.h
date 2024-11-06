@@ -17,6 +17,7 @@ enum ERRORS
 // static const int START_OF_LABLE  = 0;
 // static const int END_OF_LABLE    = 0;
 static const int VAL_EMPTY = 0;
+static const size_t FREE_label = 0x100000;
 
 typedef int List_arg_t;
 

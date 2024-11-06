@@ -21,12 +21,11 @@ int main()
     ListPushInd(&lst, 25, 2);
     ListDump(&lst);
 
+    // lst.next[2] = 0;
+    // ListDump(&lst);
+
     ListPopInd(&lst, 3);
     ListDump(&lst);
-
-
-    //ListPushEnd(&lst, 60);
-    //ListDump(&lst);
 
     ListDtor(&lst);
 
