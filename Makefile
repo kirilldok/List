@@ -26,3 +26,5 @@ run:
 clean:
 	rm Objects/*.o
 	rm main
+
+

@@ -9,8 +9,14 @@
 
 enum ERRORS
 {
-    SIZE_IS_NULL  = 1,
-    LIST_OVERFLOW = -1,
+    LIST_OVERFLOW   = -1,
+    SIZE_IS_NULL    = 1,
+    DATA_IS_NULL,
+    NEXT_IS_NULL,
+    PREV_IS_NULL,
+    NULL_PTR_DATA_CORRUPTED,
+    LST_DATA_CORRUPTED,
+
     NO_ERROR
 };
 

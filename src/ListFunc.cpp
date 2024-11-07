@@ -23,7 +23,7 @@ int ListCtor(LIST* lst, size_t size)
         StackPush(&lst->free_stk, (double)free);
     }
 
-    lst->next[0] = 0;
+    lst->next[0] = 0; //initialising null element
     lst->prev[0] = 0;
 
     lst->data[0] = VAL_EMPTY;
@@ -42,23 +42,34 @@ int ListVerify(LIST* lst)
     {
         return SIZE_IS_NULL;
     }
-    // if(lst->capacity == 0)
-    // {
-    //     return
-    // }
+
+    if(lst->capacity == 0)
+    {
+        return LIST_OVERFLOW;
+    }
+
+    if(lst->data == NULL)
+    {
+        return DATA_IS_NULL;
+    }
+
+    if(lst->next == NULL)
+    {
+        return NEXT_IS_NULL;
+    }
+
+    if(lst->prev== NULL)
+    {
+        return PREV_IS_NULL;
+    }
+
+    if(lst->data[0] != VAL_EMPTY)
+    {
+        return NULL_PTR_DATA_CORRUPTED;
+    }
 
     return NO_ERROR;
 }
-
-// int GetFirstPTR(LIST* lst)
-// {
-//     assert(lst);
-//     int i = 0;
-//     while(lst->prev[i] == 0)
-//         ++i;
-//
-//     return lst->prev[i];
-// }
 
 
 int ListPushInd(LIST* lst, List_arg_t element, size_t index) // add an element after input index
@@ -71,9 +82,9 @@ int ListPushInd(LIST* lst, List_arg_t element, size_t index) // add an element a
         return LIST_OVERFLOW;
     }
     //fprintf(stderr, "sell = %lu\n", (size_t)sell);
-    ++lst->size;
-    lst->data[lst->size - 1] = element;
     //++lst->size;
+    lst->data[lst->size] = element;
+    ++lst->size;
 
     lst->next[(size_t)sell] = lst->next[index];
     lst->prev[(size_t)sell] = index;

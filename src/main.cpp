@@ -24,6 +24,7 @@ int main()
     // lst.next[2] = 0;
     // ListDump(&lst);
 
+
     ListPopInd(&lst, 3);
     ListDump(&lst);
 

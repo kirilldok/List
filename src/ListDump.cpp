@@ -17,9 +17,7 @@ int ListDump(LIST* lst)
     fprintf(logfile,
             "## LIST SIZE:     %lu\n"
             "## LIST CAPACITY: %lu\n"
-            /*"## LIST HEAD:     %d\n"
-            "## LIST TAIL:     %d\n"*/,
-            lst->size, lst->capacity/*, lst->head, lst->tail*/);
+            lst->size, lst->capacity);
 
     fprintf(logfile, "\t");
     for(size_t i = 0; i < lst->capacity; i++)
@@ -112,7 +110,7 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                     "\tnode%.3lu ["
                     "weight = 0; "
                     "constraint = false; "
-                    "color  = red; ];\n", i);
+                    "color  = red; ];\n\n", i);
         }
 
         else if(i != lst->prev[lst->next[i]])
@@ -122,7 +120,7 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                 "node%.3lu ["
                 "weight = 0; "
                 "constraint = false; "
-                "color  = red1; ];\n", i, lst->next[i]);
+                "color  = red1; ];\n\n", i, lst->next[i]);
         }
 
         else if(i != lst->next[lst->prev[i]])
@@ -132,7 +130,7 @@ int MakeDotFile(LIST* lst, FILE* graffile)
                     "node%.3lu ["
                     "weight = 0; "
                     "constraint = false; "
-                    "color  = orange2; ];\n", i, lst->prev[i]);
+                    "color  = orange2; ];\n\n", i, lst->prev[i]);
         }
 
         else
