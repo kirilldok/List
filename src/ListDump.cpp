@@ -1,9 +1,9 @@
 #include "ListFunc.h"
 
-const char *LIST_LOG_FILE   = "run/Listlog.html";
-const char *LIST_GRAPHVIZ   = "run/graphviz.gv";
-const char *SYSTEM_CMD_LINE = "dot -Tpng run/graphviz.gv -o run/graphviz/graphviz";
-const char *HTML_MAKE_IMG   = "<img src =\"run/graphviz/graphviz";
+const char *LIST_LOG_FILE   = "Listlog.html";
+const char *LIST_GRAPHVIZ   = "graphviz.gv";
+const char *SYSTEM_CMD_LINE = "dot -Tpng graphviz.gv -o graphviz/graphviz";
+const char *HTML_MAKE_IMG   = "<img src =\"graphviz/graphviz";
 const int   LIST_CMD_SIZE   = 128;
 
 int ListDump(LIST* lst)
@@ -16,7 +16,7 @@ int ListDump(LIST* lst)
     fprintf(logfile, "#####################LISTDUMP#####################\n");
     fprintf(logfile,
             "## LIST SIZE:     %lu\n"
-            "## LIST CAPACITY: %lu\n"
+            "## LIST CAPACITY: %lu\n",
             lst->size, lst->capacity);
 
     fprintf(logfile, "\t");

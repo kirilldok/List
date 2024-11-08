@@ -11,18 +11,18 @@ int ListCtor(LIST* lst, size_t size)
     lst->prev     = (size_t*)calloc(size, sizeof(size_t)); assert(lst->prev);
 
     lst->capacity = size;
-    StackCtor(&lst->free_stk, lst->capacity);
+    //StackCtor(&lst->free_stk, lst->capacity);
 
-    for(size_t i = 0; i < lst->capacity; i++)
+    for(size_t i = 1; i < lst->capacity; i++)
     {
         lst->data[i] = Poison_label;
         lst->next[i] = i + 1;
         lst->prev[i] = FREE_label;
 
-        size_t free = lst->capacity - i;
-        StackPush(&lst->free_stk, (double)free);
-    }
 
+        //StackPush(&lst->free_stk, (double)free);
+    }
+    lst->free_cell = 1;
     lst->next[0] = 0; //initialising null element
     lst->prev[0] = 0;
 
@@ -30,7 +30,7 @@ int ListCtor(LIST* lst, size_t size)
 
     lst->size = 1;
 
-    return NO_ERROR;
+    return NO_ERRORS;
 }
 
 
@@ -68,7 +68,7 @@ int ListVerify(LIST* lst)
         return NULL_PTR_DATA_CORRUPTED;
     }
 
-    return NO_ERROR;
+    return NO_ERRORS;
 }
 
 
@@ -76,41 +76,41 @@ int ListPushInd(LIST* lst, List_arg_t element, size_t index) // add an element a
 {                                                  // if it is the fers element, index must be 0
     assert(lst);
 
-    double sell = 0;
-    if(StackPop(&lst->free_stk, &sell) == STACK_UNDERFLOW)
+    size_t cell = lst->free_cell;
+    lst->free_cell = lst->next[cell];
+    if(cell == 0)
     {
         return LIST_OVERFLOW;
     }
-    //fprintf(stderr, "sell = %lu\n", (size_t)sell);
+    //fprintf(stderr, "cell = %lu\n", (size_t)cell);
     //++lst->size;
     lst->data[lst->size] = element;
     ++lst->size;
 
-    lst->next[(size_t)sell] = lst->next[index];
-    lst->prev[(size_t)sell] = index;
+    lst->next[cell] = lst->next[index];
+    lst->prev[cell] = index;
 
-    lst->prev[lst->next[index]] = (size_t)sell;
-    lst->next[index]            = (size_t)sell;
+    lst->prev[lst->next[index]] = cell;
+    lst->next[index]            = cell;
 
-    return NO_ERROR;
+    return NO_ERRORS;
 }
 
 
-int ListPopInd(LIST* lst, size_t index)
+int ListPopInd(LIST* lst, size_t index)// remove an element out of the list
 {
     assert(lst);
 
-    StackPush(&lst->free_stk, (double)index);
     lst->data[index] = Poison_label;
 
     lst->next[lst->prev[index]] = lst->next[index];
     lst->prev[lst->next[index]] = lst->prev[index];
 
-    lst->next[index] = lst->prev[index] + 1;
+    lst->next[index] = lst->free_cell;
     lst->prev[index] = FREE_label;
+    lst->free_cell = index;
 
-
-    return NO_ERROR;
+    return NO_ERRORS;
 }
 
 
@@ -118,17 +118,17 @@ int ListPopInd(LIST* lst, size_t index)
 // {
 //     assert(lst);
 //
-//     double sell = 0;
-//     if(StackPop(&lst->free_stk, &sell) == STACK_UNDERFLOW)
+//     double cell = 0;
+//     if(StackPop(&lst->free_stk, &cell) == STACK_UNDERFLOW)
 //     {
 //         return LIST_OVERFLOW;
 //     }
 //
 //     lst->data[lst->size] = element;
 //
-//     lst->prev[lst->capacity - 1] = (int)sell;
+//     lst->prev[lst->capacity - 1] = (int)cell;
 //     lst->next[lst->size]         = lst->capacity - 1;
-//     lst->next[(int)sell]         = lst->size;
+//     lst->next[(int)cell]         = lst->size;
 //
 //     ++lst->size;
 //     return NO_ERROR;
@@ -141,12 +141,11 @@ int ListDtor(LIST* lst)
 {
     assert(lst);
 
-    StackDtor(&lst->free_stk);
     free(lst->data);
     free(lst->next);
     free(lst->prev);
 
-    return NO_ERROR;
+    return NO_ERRORS;
 }
 
 // int ListAppend(LIST* lst, List_t element)
@@ -180,7 +179,7 @@ int ListDtor(LIST* lst)
 // }
 
 
-// int FindFreeSell(List_t* arr, int capacity)
+// int FindFreecell(List_t* arr, int capacity)
 // {
 //     assert(arr);
 //

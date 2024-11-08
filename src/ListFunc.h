@@ -5,7 +5,6 @@
 #include<stdlib.h>
 #include<string.h>
 #include<assert.h>
-#include"../MyStack/StackFunc.h"
 
 enum ERRORS
 {
@@ -17,7 +16,7 @@ enum ERRORS
     NULL_PTR_DATA_CORRUPTED,
     LST_DATA_CORRUPTED,
 
-    NO_ERROR
+    NO_ERRORS
 };
 
 // static const int START_OF_LABLE  = 0;
@@ -32,9 +31,7 @@ typedef struct List
     List_arg_t* data;
     size_t* next;
     size_t* prev;
-
-    Stack_t free_stk;
-
+    size_t free_cell;
     size_t capacity;
     size_t size;
     //int head;
@@ -49,7 +46,7 @@ int ListPopInd(LIST* lst, size_t index);
 //int ListPushEnd(LIST* lst, List_t element);
 //int ListAppend(LIST* lst, List_t element);
 //int GetFirstPTR(LIST* lst);
-//int FindFreeSell(List_t* arr, int capacity);
+//int FindFreecell(List_t* arr, int capacity);
 int ListDtor(LIST* lst);
 
 int ListDump(LIST* lst);
